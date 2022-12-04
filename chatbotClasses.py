@@ -34,10 +34,10 @@ class ReadInput:
   #process the user input by splitting it into individual words and removing special characters and correcting spelling, then pass it on for analysis
     @staticmethod
     def process(userInput):
-        wordList_corrected = TextBlob(userInput)
-        testword = wordList_corrected.correct()
+        # wordList_corrected = TextBlob(userInput)
+        # testword = wordList_corrected.correct()
        # print(testword)
-        wordList = re.split(r'\s+|[,;?!.-]\s*',str(testword))
+        wordList = re.split(r'\s+|[,;?!.-]\s*',str(userInput))
        
        
         #print(wordList)
@@ -152,7 +152,7 @@ class InputAnalysis:
         helper(Response.getResponse(Response.HOW_I_AM),["how","are","you","doing"],requiredWords=["how","you"])
         helper(Response.getResponse(Response.DOING_WELL),["im","good","doing","well","great"],requiredWords=["doing"])
         helper(Response.getResponse(Response.DOING_BAD),["im","bad","doing","poorly"],requiredWords=["doing"])
-        helper(Response.getResponse(Response.GRADE_I_CLIMB),["what","grade","do","you","climb"],requiredWords=["climb"])
+        helper(Response.getResponse(Response.GRADE_I_CLIMB),["what","grade","do","you","climb"],requiredWords=["what","climb"])
         helper(Response.getResponse(Response.GRADE_CONGRATS),["i","climb","v1","v2","v3"],requiredWords=["i","climb"])
         helper(Response.getResponse(Response.STYLE_I_CLIMB),["what","climb","style","do","you","like"],requiredWords=["style","like"])
         helper(Response.getResponse(Response.FAVOURITE_CLIMBER),["who","is","your","favourite","climber"],requiredWords=["who","your","favourite","climber"])
