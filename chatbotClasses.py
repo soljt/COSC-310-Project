@@ -46,7 +46,7 @@ class ReadInput:
             userInput = googletranslate.translate_text(userInput)
             # print("called google translate")
             # print(f"translated input: {userInput}")
-        wordList = re.split(r'\s+|[,;?!.-]\s*',str(userInput.lower()))
+        wordList = re.split(r'\s+|[,;\'?!.-]\s*',str(userInput.lower()))
        
        
         #print(wordList)
@@ -165,6 +165,7 @@ class InputAnalysis:
         #here we specify the words we expect to see in the user input and the required words for each response category
         helper(Response.getResponse(Response.GREETING),["hi","hey","sup","hello"],singleWord=True)
         helper(Response.getResponse(Response.HOW_I_AM),["how","are","you","doing"],requiredWords=["how","you"])
+        helper(Response.getResponse(Response.HOW_I_AM),["how","is","it","going"],requiredWords=["how","going"])
         helper(Response.getResponse(Response.DOING_WELL),["im","good","doing","well","great"],requiredWords=["doing"])
         helper(Response.getResponse(Response.DOING_BAD),["im","bad","doing","poorly"],requiredWords=["doing"])
         helper(Response.getResponse(Response.GRADE_I_CLIMB),["what","grade","do","you","climb"],requiredWords=["what","climb"])

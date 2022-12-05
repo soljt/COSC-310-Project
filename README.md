@@ -49,3 +49,17 @@ The chatbot can now correct basic spelling errors like "yuo" instead of "you".
 The chatbot now has 5 things that it can say if it doesn't recognize the user input.
 
 ![image](sample_outputs/unrecognized_sample.png)
+
+## New since A3
+
+## Google StreetView API
+
+The chatbot now provides an image captured from google streetview when you ask where it works out or where it climbs. This feature adds authenticity to the chatbot as it cites real locations that are geographically close.
+
+## Google Cloud Translation API
+
+The chatbot now detects the user's input language and if the language is not english, it translates the user's input to english and then repsonds normally. This allows the chatbot to interpret input from a larger user base
+
+## Login feature (unfinished since it isn't worth points for this assignment)
+
+The chat service "webpage" that the chatbot converses through now has a log-in feature, which requires a user to provide a valid login to begin chatting with the bot (only implemented in main.py). In the sample userdata.db file on github, the only user stored has username "soljt" and password "password".
