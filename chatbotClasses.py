@@ -1,5 +1,8 @@
 from random import randrange
 import re
+import translate
+import streetview
+import googletranslate
 # import spacy 
 # from spacytextblob.spacytextblob import SpacyTextBlob
 from textblob import TextBlob
@@ -26,23 +29,31 @@ class ReadInput:
     def read(userInput):
         # if userInput.lower() == "end session":
         #     return "END_SESSION"
+        associatedImg = ""
         if ReadInput.validate(userInput):
-            return (ReadInput.USERNAME + ": " + ReadInput.process(userInput))
+            response, associatedImg = ReadInput.process(userInput)
+            return ((ReadInput.USERNAME + ": " + response), associatedImg)
         else:
-            return (ReadInput.USERNAME+ ": " + Response.getResponse(Response.SWEAR))
+            return ((ReadInput.USERNAME+ ": " + Response.getResponse(Response.SWEAR)), associatedImg)
         
   #process the user input by splitting it into individual words and removing special characters and correcting spelling, then pass it on for analysis
     @staticmethod
     def process(userInput):
         # wordList_corrected = TextBlob(userInput)
         # testword = wordList_corrected.correct()
-       # print(testword)
-        wordList = re.split(r'\s+|[,;?!.-]\s*',str(userInput))
+        # print(testword)
+        if not googletranslate.detect_language_en(userInput):
+            userInput = googletranslate.translate_text(userInput)
+            # print("called google translate")
+            # print(f"translated input: {userInput}")
+        wordList = re.split(r'\s+|[,;?!.-]\s*',str(userInput.lower()))
        
        
         #print(wordList)
-        response = InputAnalysis.checkAllResponses(wordList) #see comments in other class
-        return response
+        response, associatedImg = InputAnalysis.checkAllResponses(wordList) #see comments in other class
+        # if "google streetview" in response.lower():
+        #     streetview.streetviewImage("banks")
+        return (response, associatedImg)
         
 
         
@@ -83,6 +94,10 @@ class Response:
     BENCH = ["We don't talk about bench press", "I hate benching, couldn't even tell you what I bench", "I MIGHT be able to bench a couple plates"]
     SPLIT = ["My current workout split is like full body everyday", "I train evvery muscle group each day, but pretty low volume", "I used to do PPL"]
     EQUIP = ["I rock wrist wraps and a belt but never straps", "Somedays I bring chalk to the gym even though it's not allowed LOL", "Most days I don't even bring a gym bag"]
+
+    #streetview generating
+    WHERE_I_CLIMB = ["Sometimes I climb at gneiss on banks rd, heres a picture from google streetview:", "Sometimes I climb at gneiss hill security, heres a picture from google streetview:"]
+    WHERE_I_LIFT = ["I usually workout at h2o, heres a picture from google streetview:"]
 
     UNRECOGNIZED = ["Haha, nice!", "Anywaaays, how are you?", "Nice! So do you lift?", "Haha. Anyways, do you bench press?", "Can you rephrase that?", "I'm honestly not sure what you mean..."]
     
@@ -137,7 +152,7 @@ class InputAnalysis:
     def checkAllResponses(userWordList):
         #create matches dictionary to store chatbot responses and their probabilities of being relevant 
         matches = {}
-        
+        places = ["banks","hill","h2o"]
         #helper function (like a macro) to populate dictionary. takes a canned response, the words that we expect to
         #be part of the user input, and whether the user input we'd expect is a single word or a sentence (if we
         # expect a sentence, we must inlcude required words - words that must appear in the users sentence for the 
@@ -167,17 +182,25 @@ class InputAnalysis:
         helper(Response.getResponse(Response.SPLIT),["whats","your","workout","split","like"],requiredWords=["split"])
         helper(Response.getResponse(Response.EQUIP),["what","kind","of","type","equipment","do","you","use"],requiredWords=["equipment"])
         helper(Response.getResponse(Response.DO_I_CLIMB),["do","you","climb","rock","rocks","boulder","lead","sport"],requiredWords=["do","you"])
-        helper(Response.getResponse(Response.DO_I_LIFT),["do","you","lift","gym","go","to","the","weights"],requiredWords=["do","you"])
-        # helper(Response.getResponse(Response.COOL),["cool","dope","awesome","great","yup","yeah","totally"],singleWord=True)
+        helper(Response.getResponse(Response.DO_I_LIFT),["do","you","lift","gym","go","to","the","weights"],requiredWords=["you", "gym"])
+        helper(Response.getResponse(Response.DO_I_LIFT),["do","you","lift","gym","go","to","the","weights"],requiredWords=["you", "lift"])
+        helper(Response.getResponse(Response.WHERE_I_CLIMB),["where","do","you","climb"],requiredWords=["where","you","climb"])
+        helper(Response.getResponse(Response.WHERE_I_LIFT),["where","do","you","lift"],requiredWords=["where","you","lift"])
+        helper(Response.getResponse(Response.WHERE_I_LIFT),["where","do","you", "workout"],requiredWords=["where","you","workout"])
 
         #determine the best match based on the highest probability of being relevant according to the probability function
         #if this best match has a really low probability, just print some default response
         bestMatch = max(matches, key=matches.get)
+        associatedImg = ""
         if matches[bestMatch] < 1:
             # wikiresponse = Sentiment_Analysis.getWikiResponse()
             # if wikiresponse:
             #     return wikiresponse
             # else:
-            return Response.getResponse(Response.UNRECOGNIZED)
+            return (Response.getResponse(Response.UNRECOGNIZED), associatedImg)
         else:
-            return bestMatch
+            for place in places:
+                if place in bestMatch:
+                    streetview.streetviewImage(place)
+                    associatedImg = str(place) + ".png"
+            return bestMatch, associatedImg
