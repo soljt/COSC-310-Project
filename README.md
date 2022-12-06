@@ -56,9 +56,13 @@ The chatbot now has 5 things that it can say if it doesn't recognize the user in
 
 The chatbot now provides an image captured from google streetview when you ask where it works out or where it climbs. This feature adds authenticity to the chatbot as it cites real locations that are geographically close.
 
+![image](sample_outputs/googlestreetview_sample.png)
+
 ## Google Cloud Translation API
 
 The chatbot now detects the user's input language and if the language is not english, it translates the user's input to english and then repsonds normally. This allows the chatbot to interpret input from a larger user base
+
+![image](sample_outputs/googletranslate_sample.png)
 
 ## Login feature (unfinished since it isn't worth points for this assignment)
 
